@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb://localhost:27016/mern_assignment",
+  "jwtSecret": "sl_myJwtSecret"
+}
