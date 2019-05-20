@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import {
   Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
   Form,
   FormGroup,
   Label,
@@ -13,69 +10,64 @@ import { connect } from 'react-redux';
 import { addItem } from '../actions/itemActions';
 import PropTypes from 'prop-types';
 
-class ItemModal extends Component {
-  formData = {};
-  state = {
-    modal: false,
-    userName: '',
-    paymentMode: '',
-    amount: 0
-  };
+const initState = {
+  userName: 'USER-A',
+  paymentMode: '',
+  amount: 0,
+  errorPaymentMode: '',
+  errorAmount: ''
+}
+class AddItemForm extends Component {
+  state = initState;
 
   static propTypes = {
     isAuthenticated: PropTypes.bool
   };
 
-  toggle = () => {
-    this.setState({
-      modal: !this.state.modal
-    });
-  };
-
   onChange = e => {
-    // console.log(e.target.name);
-    if (e.target.name === 'amount'){
-      this.formData.amount =  e.target.value;
-
-    }
-    if (e.target.name === 'userName') {
-      this.formData.userName =  e.target.value;
-
-    }
-    if (e.target.name === 'paymentMode') {
-      this.formData.paymentMode =  e.target.value;
-    }
-    // console.log(this.formData);
-    this.setState( this.formData );
+    this.setState( {[e.target.name]: e.target.value} );
+    console.log(this.state)
   };
 
+  validate = () => {
+    let errorPaymentMode = '';
+    let errorAmount = ''; 
+    if (this.state.paymentMode === ''){
+      errorPaymentMode = 'Select payment Mode';
+    }
+    if (this.state.amount == '' || parseInt(this.state.amount) == 0 || parseInt(this.state.amount) > 5000 ){
+      errorAmount = 'Amount not valid';
+    }
+    console.log(this.state.paymentMode, this.state.amount)
+    if (errorPaymentMode || errorAmount){
+      this.setState({errorPaymentMode, errorAmount});
+
+      return false;
+    }
+    return true;
+  }
   onSubmit = e => {
     e.preventDefault();
-
-    const newItem = {
-      userName: this.state.userName,
-      paymentMode: this.state.paymentMode,
-      amount: this.state.amount
-    };
-    // Add item via addItem action
-    this.props.addItem(newItem);
-
-    // Close modal
-    this.toggle();
+    const isValid = this.validate()
+    if (isValid) {
+      const newItem = {
+        userName: this.state.userName,
+        paymentMode: this.state.paymentMode,
+        amount: this.state.amount
+      };
+      // Add item via addItem action
+      this.props.addItem(newItem);
+      e.target.reset();
+      this.setState(initState)
+    }
+    
   };
 
   render() {
     return (
       <div className="addItem-wrapper bg-color">
         {this.props.isAuthenticated ? (
-          // <Button
-          //   color='dark'
-          //   style={{ marginBottom: '2rem' }}
-          //   onClick={this.toggle}
-          // >
-          //   Transfer
-          // </Button>
-          <Form onSubmit={this.onSubmit}>
+          <Form ref="addItemForm" onSubmit={this.onSubmit}>
             <FormGroup className="floatLeft width20Per ml">
               <Label for='userSelect'>Select User</Label>
               <Input type="select" name="userName" id="userSelect" onChange={this.onChange}>
@@ -89,7 +81,7 @@ class ItemModal extends Component {
 
             
             <FormGroup className="floatLeft width20Per ml">
-              <Label for='paymentMode'>Payment Mode</Label>
+              <Label className={(this.state.errorPaymentMode ? 'errormsg' : '')} for='paymentMode'>Payment Mode</Label>
               <FormGroup check>
                 <Label check>
                   <Input type="radio" name="paymentMode" value="American Express" onChange={this.onChange} />{' '}
@@ -108,19 +100,19 @@ class ItemModal extends Component {
                   DBS PayLa
                 </Label>
               </FormGroup>
+              {/* <div className="text-danger errormsg">{this.state.errorPaymentMode}</div> */}
           </FormGroup>
           
           <FormGroup className="floatLeft width20Per ml">
-              <Label for='item'>Amount</Label>
+              <Label className={(this.state.errorAmount ? 'errormsg' : '')} for='item'>Amount</Label>
               <Input
                 type='number'
                 name='amount'
                 id='amount'
-                min="1"
-                max="5000"
                 placeholder='Add amount'
                 onChange={this.onChange}
               />
+              <Label className="fontSize">*** Maximum allowed amount is 5000 INR</Label>
             </FormGroup>
 
             <FormGroup className="floatLeft width20Per ml">
@@ -146,4 +138,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { addItem }
-)(ItemModal);
+)(AddItemForm);

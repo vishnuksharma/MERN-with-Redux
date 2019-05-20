@@ -39,6 +39,12 @@
 .data-slice {
   margin-top: 15px;
 }
+.errormsg {
+  color: #dc3545;
+}
+.fontSize{
+  font-size: 9px;
+}
 @media(min-width:768px){
   .floatLeft{
     float: left;

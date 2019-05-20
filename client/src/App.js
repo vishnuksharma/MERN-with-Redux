@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import AppNavbar from './components/AppNavbar';
 import TransactionList from './components/TransactionList';
-import ItemModal from './components/ItemModal';
+import AddItemForm from './components/AddItemForm';
 import { Container } from 'reactstrap';
 
 import { Provider } from 'react-redux';
@@ -22,7 +22,7 @@ class App extends Component {
         <div className='App'>
           <AppNavbar />
           <Container>
-            <ItemModal />
+            <AddItemForm />
             <TransactionList />
           </Container>
         </div>

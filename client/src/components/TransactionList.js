@@ -64,7 +64,6 @@ class TransactionList extends Component {
       <React.Fragment>
         <Container className="mt-3 pl-0 pr-0">
         <ListGroup>
-          <TransitionGroup className='transaction-list'>
           <Table responsive>
             <thead>
               <tr>
@@ -103,8 +102,6 @@ class TransactionList extends Component {
             )}
           </tbody>
           </Table>
-            
-          </TransitionGroup>
         </ListGroup>
       </Container>
             <div className="pagination-wrapper">
