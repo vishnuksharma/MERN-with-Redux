@@ -24,7 +24,7 @@ class AddItemForm extends Component {
     isAuthenticated: PropTypes.bool
   };
 
-  onChange = e => {
+  handleChange = e => {
     this.setState( {[e.target.name]: e.target.value} );
     console.log(this.state)
   };
@@ -70,7 +70,7 @@ class AddItemForm extends Component {
           <Form ref="addItemForm" onSubmit={this.onSubmit}>
             <FormGroup className="floatLeft width20Per ml">
               <Label for='userSelect'>Select User</Label>
-              <Input type="select" name="userName" id="userSelect" onChange={this.onChange}>
+              <Input type="select" name="userName" id="userSelect" onChange={this.handleChange}>
                 <option>USER-A</option>
                 <option>USER-B</option>
                 <option>USER-C</option>
@@ -84,19 +84,19 @@ class AddItemForm extends Component {
               <Label className={(this.state.errorPaymentMode ? 'errormsg' : '')} for='paymentMode'>Payment Mode</Label>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="paymentMode" value="American Express" onChange={this.onChange} />{' '}
+                  <Input type="radio" name="paymentMode" value="American Express" onClick={this.handleChange} />{' '}
                   American Express
                 </Label>
               </FormGroup>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="paymentMode" value="VISA" onChange={this.onChange} />{' '}
+                  <Input type="radio" name="paymentMode" value="VISA" onClick={this.handleChange} />{' '}
                   VISA
                 </Label>
               </FormGroup>
               <FormGroup check>
                 <Label check>
-                  <Input type="radio" name="paymentMode" value="DBS PayLa" onChange={this.onChange} />{' '}
+                  <Input type="radio" name="paymentMode" value="DBS PayLa" onClick={this.handleChange} />{' '}
                   DBS PayLa
                 </Label>
               </FormGroup>
@@ -110,7 +110,7 @@ class AddItemForm extends Component {
                 name='amount'
                 id='amount'
                 placeholder='Add amount'
-                onChange={this.onChange}
+                onChange={this.handleChange}
               />
               <Label className="fontSize">*** Maximum allowed amount is 5000 INR</Label>
             </FormGroup>
