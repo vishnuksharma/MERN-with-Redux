@@ -1,5 +1,5 @@
 {
   "mongoURIDev": "mongodb://localhost:27016/mern_assignment",
-  "mongoURI": "mongodb://vishnuksharma:vishnu123@ds161931.mlab.com:61931/mernreduxdb",
+  "mongoURI": "mongodb://vishnuksharma:vishnu123@ds159216.mlab.com:59216/mernreduxdb",
   "jwtSecret": "sl_myJwtSecret"
 }
