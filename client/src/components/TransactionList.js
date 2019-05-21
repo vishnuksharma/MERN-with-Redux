@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Container, ListGroup, ListGroupItem, Button, Table, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
+import { Container, ListGroup, Button, Table, Pagination, PaginationItem, PaginationLink } from 'reactstrap';
 
-import { CSSTransition, TransitionGroup, Transition } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { getItems, deleteItem } from '../actions/itemActions';
 import PropTypes from 'prop-types';

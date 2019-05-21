@@ -7,7 +7,8 @@ import PropTypes from 'prop-types';
 export class TransactionGraph extends Component {
 
   render() {
-    // const {data, width, height, margin} = this.props
+    const {items} = this.props.item;
+    console.log(items)
     const width = 1150, height = 600, margin = 20
     const data = [
       {a: 1, b: 3},
@@ -73,6 +74,12 @@ export class TransactionGraph extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+    item: state.item,
+    isAuthenticated: state.auth.isAuthenticated
+  });
+
 export default connect(
-  null,
+  mapStateToProps,
+  null
 )(TransactionGraph);
