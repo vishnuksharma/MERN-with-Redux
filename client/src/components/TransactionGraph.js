@@ -1,75 +1,158 @@
 import React, { Component, Fragment } from 'react';
 import * as d3 from 'd3';
-import { NavLink } from 'reactstrap';
+import {
+  select,
+  csv,
+  scaleLinear,
+  scaleTime,
+  scaleOrdinal,
+  extent,
+  axisLeft,
+  axisBottom,
+  line,
+  curveBasis,
+  nest,
+  schemeCategory10,
+  descending
+} from 'd3';
+import { colorLegend } from '../colorLegend';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 export class TransactionGraph extends Component {
 
   render() {
-    const {items} = this.props.item;
-    console.log(items)
-    const width = 1150, height = 600, margin = 20
-    const data = [
-      {a: 1, b: 3},
-      {a: 2, b: 6},
-      {a: 3, b: 2},
-      {a: 4, b: 12},
-      {a: 5, b: 8}
-    ]
-    const h = height - 2 * margin, w = width - 2 * margin
 
-    //number formatter
-    const xFormat = d3.format('.2')
-    
-    //x scale
-    const x = d3.scaleLinear()
-      .domain(d3.extent(data, d => d.a)) //domain: [min,max] of a
-      .range([margin, w])
-    
-    //y scale
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.b)]) // domain [0,max] of b (start from 0)
-      .range([h, margin])
-    
-    //line generator: each point is [x(d.a), y(d.b)] where d is a row in data
-    // and x, y are scales (e.g. x(10) returns pixel value of 10 scaled by x)
-    const line = d3.line()
-      .x(d => x(d.a))
-      .y(d => y(d.b))
-      .curve(d3.curveCatmullRom.alpha(0.5)) //curve line
-     
-    const xTicks = x.ticks(6).map(d => (
-        x(d) > margin && x(d) < w ? 
-          <g key={d} transform={`translate(${x(d)},${h + margin})`}>  
-            <text>{xFormat(d)}</text>
-            <line x1='0' x1='0' y1='0' y2='5' transform="translate(0,-20)"/>
-          </g>
-        : null
-    ))
+    const callGraphFunc = (data) => {
+      if (data.length !== 0){
+        console.log('if')
+        renderGraph(data)
+       } else {
+         console.log('else')
+        return false;
+       }
+    }
 
-    const yTicks = y.ticks(5).map(d => (
-        y(d) > 10 && y(d) < h ? 
-          <g key={d} transform={`translate(${margin},${y(d)})`}>  
-            <text x="-12" y="5">{xFormat(d)}</text>
-            <line x1='0' x1='5' y1='0' y2='0' transform="translate(-5,0)"/>
-            <line className='gridline' x1='0' x1={w - margin} y1='0' y2='0' transform="translate(-5,0)"/> 
-          </g>
-        : null
-    ))
+    const renderGraph = (data) => {
+      // data = [...data];
+      if (data.length > 0){
+        data.map(d => {
+          d.date = new Date(d.date)
+        });
+        // dataNew[0].date = new Date(dataNew[0].date)
+      }
+      
+
+      console.log(data);
+      const title = 'Payment Transaction Chart';
+      const svg = select('svg');
+      const xValue = d =>{
+        return  d.date;
+      };
+      const xAxisLabel = 'Time';
+      
+      const yValue = d => d.amount;
+      const circleRadius = 6;
+      const yAxisLabel = 'Amount';
+      
+      const colorValue = d => d.paymentMode;
+      const width = 1150, height = 600;
+      const margin = { top: 60, right: 160, bottom: 88, left: 105 };
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+      
+      const xScale = scaleTime()
+        .domain(extent(data, xValue))
+        .range([0, innerWidth])
+        .nice();
+      
+      const yScale = scaleLinear()
+        .domain(extent(data, yValue))
+        .range([innerHeight, 0])
+        .nice();
+      
+      const colorScale = scaleOrdinal(schemeCategory10);
+      
+      const g = svg.append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+      
+      const xAxis = axisBottom(xScale)
+        .tickSize(-innerHeight)
+        .tickPadding(15);
+      
+      const yAxis = axisLeft(yScale)
+        .tickSize(-innerWidth)
+        .tickPadding(10);
+      
+      const yAxisG = g.append('g').call(yAxis);
+      yAxisG.selectAll('.domain').remove();
+      
+      yAxisG.append('text')
+          .attr('class', 'axis-label')
+          .attr('y', -70)
+          .attr('x', -innerHeight / 2)
+          .attr('fill', 'black')
+          .attr('transform', `rotate(-90)`)
+          .attr('text-anchor', 'middle')
+          .text(yAxisLabel);
+      
+      const xAxisG = g.append('g').call(xAxis)
+        .attr('transform', `translate(0,${innerHeight})`);
+      
+      xAxisG.select('.domain').remove();
+      
+      xAxisG.append('text')
+          .attr('class', 'axis-label')
+          .attr('y', 80)
+          .attr('x', innerWidth / 2)
+          .attr('fill', 'black')
+          .text(xAxisLabel);
+      
+      const lineGenerator = line()
+        .x(d => xScale(xValue(d)))
+        .y(d => yScale(yValue(d)))
+        .curve(curveBasis);
+      
+      const lastYValue = d =>
+        yValue(d.values[d.values.length - 1]);
+      
+      const nested = nest()
+        .key(colorValue)
+        .entries(data)
+        .sort((a, b) =>
+          descending(lastYValue(a), lastYValue(b))
+        );
+      
+      console.log(nested);
+      
+      colorScale.domain(nested.map(d => d.key));
+      
+      g.selectAll('.line-path').data(nested)
+        .enter().append('path')
+          .attr('class', 'line-path')
+          .attr('d', d => lineGenerator(d.values))
+          .attr('stroke', d => colorScale(d.key));
+      
+      g.append('text')
+          .attr('class', 'title')
+          .attr('y', -10)
+          .text(title);
+      
+      svg.append('g')
+        .attr('transform', `translate(950,70)`)
+        .call(colorLegend, {
+          colorScale,
+          circleRadius: 13,
+          spacing: 30,
+          textOffset: 15
+        });
+    }
 
     return  (
-      <svg width={width} height={height}>
-         <line className="axis" x1={margin} x2={w} y1={h} y2={h}/>
-         <line className="axis" x1={margin} x2={margin} y1={margin} y2={h}/>
-         <path d={line(data)}/>
-         <g className="axis-labels">
-           {xTicks}
-         </g>
-         <g className="axis-labels">
-           {yTicks}
-         </g>
-      </svg>
+      <div>
+         {callGraphFunc(this.props.item.items)}
+        <svg width="1150" height="650"></svg>
+      </div>
     )
   }
 }

@@ -57,38 +57,37 @@
   }
 }
 
+/* graph css start */
 
-#app {
-  padding: 20px;
-  font-family: robot, arial
-}
-svg {
-  fill: #000;
-  fill-opacity: 0.3;
-}
-
-path {
-  stroke: steelblue;
-  stroke-width: 2px;
+.line-path {
   fill: none;
+  
+  stroke-width: 5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  mix-blend-mode: multiply;
 }
 
-.axis {
-  stroke: #000;
+text {
+  font-family: sans-serif;
 }
 
-.axis-labels text {
-  fill: #000;
-  fill-opacity: 0.9;
-  font-size: 12px;
-  text-anchor: middle;
+.tick text {
+  font-size: 1.4rem;
+  fill: #635F5D;
 }
 
-.axis-labels line {
-  stroke: #000;
+.tick line {
+  stroke: #C0C0BB;
 }
 
-.gridline {
-  opacity: 0.2;
+.axis-label {
+  font-size: 5em;
+  fill: #8E8883;
+}
+
+.title {
+  font-size: 2.7em;
+  fill: #635F5D;
 }
 
