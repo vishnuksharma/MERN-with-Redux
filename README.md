@@ -1,6 +1,6 @@
 # MERN WITH REDUX
 
-> MERN stack along with Redux for state management.
+> MERN stack along with Redux for state management. [a link ](https://mern-n-redux.herokuapp.com/)
 
 ## Quick Start
 
