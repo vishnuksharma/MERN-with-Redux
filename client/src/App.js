@@ -26,7 +26,7 @@ class App extends Component {
           <Container>
             <AddItemForm />
             <TransactionList />
-//             <TransactionGraph />
+             {/* <TransactionGraph /> */}
           </Container>
         </div>
       </Provider>
