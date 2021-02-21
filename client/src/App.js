@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import AppNavbar from './components/AppNavbar';
 import TransactionList from './components/TransactionList';
 import AddItemForm from './components/AddItemForm';
-import TransactionGraph from './components/TransactionGraph';
+// import TransactionGraph from './components/TransactionGraph';
 import { Container } from 'reactstrap';
 
 import { Provider } from 'react-redux';
